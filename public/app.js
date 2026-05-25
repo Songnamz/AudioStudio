@@ -662,7 +662,12 @@ function updateQueueStatusWidget(active, queued, limit) {
 
 async function fetchQueueStatus() {
   try {
-    const res = await fetch('/api/queue-status');
+    const res = await fetch('/api/queue-status', {
+      headers: {
+        'Accept': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+    });
     if (!res.ok) return;
     const { active, queued, limit } = await res.json();
     updateQueueStatusWidget(active, queued, limit);
@@ -671,7 +676,7 @@ async function fetchQueueStatus() {
 
 function startQueuePolling() {
   fetchQueueStatus();
-  if (!queuePollId) queuePollId = setInterval(fetchQueueStatus, 5000);
+  if (!queuePollId) queuePollId = setInterval(fetchQueueStatus, 15000);
 }
 
 function stopQueuePolling() {

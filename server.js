@@ -228,12 +228,12 @@ app.use((req, res, next) => {
     'Content-Security-Policy',
     [
       "default-src 'none'",
-      "script-src 'self'",
+      "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src https://fonts.gstatic.com",
       "img-src 'self' data:",
       "media-src blob:",
-      "connect-src 'self'",
+      "connect-src 'self' https://cloudflareinsights.com",
       "frame-ancestors 'none'",
     ].join('; ')
   );
