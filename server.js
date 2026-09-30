@@ -335,6 +335,10 @@ const MAX_JOBS_PER_IP       = Math.max(1, parseInt(process.env.MAX_JOBS_PER_IP  
 const ipJobCounts = new Map(); // ip -> number of active+queued jobs
 
 function getClientIp(req) {
+  // Behind Cloudflare, cf-connecting-ip is the real client and can't be spoofed
+  // (the first X-Forwarded-For entry can, which would bypass the per-IP cap)
+  const cfIp = req.headers['cf-connecting-ip'];
+  if (cfIp) return cfIp;
   const xff = req.headers['x-forwarded-for'];
   return (xff ? xff.split(',')[0].trim() : null)
     || req.socket?.remoteAddress
