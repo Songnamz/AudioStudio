@@ -8,8 +8,12 @@ RUN apt-get update -y \
 # Demucs in a venv; CPU-only PyTorch avoids pulling multi-GB CUDA wheels
 ENV VIRTUAL_ENV=/opt/venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+# Pinning the +cpu local versions keeps PyPI from supplying the CUDA build,
+# while the extra index lets pure-Python deps resolve from PyPI
 RUN python3 -m venv $VIRTUAL_ENV \
- && pip install --no-cache-dir torch==2.5.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cpu \
+ && pip install --no-cache-dir --upgrade pip \
+ && pip install --no-cache-dir torch==2.5.1+cpu torchaudio==2.5.1+cpu \
+      --index-url https://download.pytorch.org/whl/cpu --extra-index-url https://pypi.org/simple \
  && pip install --no-cache-dir demucs==4.0.1 soundfile
 
 # Bake the default Demucs model into the image so the first job doesn't download it
